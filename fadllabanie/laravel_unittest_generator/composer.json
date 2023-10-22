@@ -1,0 +1,16 @@
+{
+    "name": "fadllabanie/laravel_unittest_generator",
+    "autoload": {
+        "psr-4": {
+            "fadllabanie\\laravel_unittest_generator\\": "src/"
+
+        }
+    },
+    "authors": [
+        {
+            "name": "fdl-labanie",
+            "email": "f.labanie@namaa-solutions.com"
+        }
+    ],
+    "require": {}
+}
