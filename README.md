@@ -7,7 +7,7 @@ Easily generate unit tests for your Laravel applications with the `laravel_unitt
 To install via Composer:
 
 ```bash
-composer require fadllabanie/laravel_unittest_generator
+composer require fadllabanie/laravel_unittest_generator:dev-main
 ```
 
 
