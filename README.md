@@ -9,17 +9,7 @@ To install via Composer:
 ```bash
 composer require fadllabanie/laravel_unittest_generator
 ```
-## Usage
-Once installed, you can generate unit tests for your models with the provided Artisan command:
-```bash
-php artisan make:unittest ModelName
-```
-## Features:
-Generate Factories:
-This package automatically generates Laravel factories based on the model's $fillable and $fillableType properties.
 
-## CRUD Unit Tests:
-With a single command, you can generate unit tests for Create, Read, Update, and Delete operations for any given model.
 
 ## Configuration:
 To properly use this package, your models should contain the following properties:
@@ -42,6 +32,20 @@ public function getFillableType()
     }
 ```
 Where datatype should match one of the supported data types: `string`, `text`, `integer`, `float`, `date`, `datetime`, `boolean`, `email`.
+
+
+
+## Usage
+Once installed, you can generate unit tests for your models with the provided Artisan command:
+```bash
+php artisan generate:unittest ModelName
+```
+## Features:
+Generate Factories:
+This package automatically generates Laravel factories based on the model's $fillable and $fillableType properties.
+
+## CRUD Unit Tests:
+With a single command, you can generate unit tests for Create, Read, Update, and Delete operations for any given model.
 
 ## Known Issues:
 Make sure that your models are correctly namespaced and that you've correctly set up your autoload paths in your composer.json file.
