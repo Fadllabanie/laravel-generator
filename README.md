@@ -1,4 +1,4 @@
-# Laravel Unittest Generator
+# Laravel Unit Test Generator
 
 Easily generate unit tests for your Laravel applications with the `laravel_unittest_generator` package.
 

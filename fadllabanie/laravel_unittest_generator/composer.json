@@ -1,5 +1,7 @@
 {
     "name": "fadllabanie/laravel_unittest_generator",
+    "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "fadllabanie\\laravel_unittest_generator\\": "src/"
@@ -8,9 +10,19 @@
     },
     "authors": [
         {
-            "name": "fdl-labanie",
-            "email": "f.labanie@namaa-solutions.com"
+            "name": "fadl labanie",
+            "email": "labnaie.fadl@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": ">=7.3",
+        "illuminate/support": "^8.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "fadllabanie\\laravel_unittest_generator\\YourServiceProvider"
+            ]
+        }
+    }
 }
