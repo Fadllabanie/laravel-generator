@@ -10,9 +10,10 @@ To install via Composer:
 composer require fadllabanie/laravel_unittest_generator:dev-main
 ```
 
-
 ## Configuration:
+
 To properly use this package, your models should contain the following properties:
+
 ```bash
 public function getFillable()
     {
@@ -22,6 +23,7 @@ public function getFillable()
         ];
     }
 ```
+
 ```bash
 public function getFillableType()
     {
@@ -31,28 +33,34 @@ public function getFillableType()
         ];
     }
 ```
-Where datatype should match one of the supported data types: `string`, `text`, `integer`, `float`, `date`, `datetime`, `boolean`, `email`.
 
-
+Where datatype should match one of the supported data types:
+`string`, `text`, `integer`, `float`, `date`, `datetime`, `boolean`,`password`, `email`,`token`,`belongsTo`
 
 ## Usage
+
 Once installed, you can generate unit tests for your models with the provided Artisan command:
+
 ```bash
-php artisan generate:unittest ModelName
+php artisan generate:unittest ModelName ModelPath {-f}
 ```
+
 ## Features:
+
 Generate Factories:
 This package automatically generates Laravel factories based on the model's $fillable and $fillableType properties.
 
 ## CRUD Unit Tests:
-With a single command, you can generate unit tests for Create, Read, Update, and Delete operations for any given model.
+
+With a single command, you can generate unit tests for Create, Read, Update, and Delete operations for any given model also belongs to relationship
 
 ## Known Issues:
+
 Make sure that your models are correctly namespaced and that you've correctly set up your autoload paths in your composer.json file.
 Ensure that your models have the necessary `$fillable` and `$fillableType` properties defined for the package to work correctly.
 
 Ensure that your models have the necessary `getFillable()` and `getFillableType()` properties defined for the package to work correctly.
 
 ## Contributing:
-We welcome contributions! Please submit PRs for any enhancements, fixes, or features you want to add.
 
+We welcome contributions! Please submit PRs for any enhancements, fixes, or features you want to add.
