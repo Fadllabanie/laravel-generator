@@ -23,7 +23,9 @@ class GenerateControllerHelper
     {
         $modelNameStudly = Str::studly($modelName);
 
-        $actionNamespace = 'App\\Actions';
+        $modelNamePlural = Str::plural($modelName);
+        $actionNamespace = 'App\\Actions\\' . $modelNamePlural;
+
         $actionClass = "Create{$modelNameStudly}Action";
 
         $modelNamePlural = Str::plural($modelNameStudly);
@@ -44,6 +46,9 @@ class GenerateControllerHelper
         {
             public function execute(array \$data): {$modelNameStudly}
             {
+                // Validate and create a new {$modelNameStudly}
+                // TODO: Add your validation and creation logic here
+
                 return {$modelNameStudly}::create(\$data);
             }
         }
@@ -64,6 +69,10 @@ class GenerateControllerHelper
     protected function generateUpdateAction($modelName)
     {
         $modelNameStudly = Str::studly($modelName);
+
+        $modelNamePlural = Str::plural($modelName);
+        $actionNamespace = 'App\\Actions\\' . $modelNamePlural;
+
         $actionClass = "Update{$modelNameStudly}Action";
 
         $modelNamePlural = Str::plural($modelNameStudly);
@@ -77,7 +86,7 @@ class GenerateControllerHelper
         $actionContent = <<<PHP
 <?php
 
-namespace App\Actions;
+namespace {$actionNamespace};
 
 use App\Models\\{$modelNameStudly};
 
@@ -101,6 +110,11 @@ PHP;
     protected function generateDeleteAction($modelName)
     {
         $modelNameStudly = Str::studly($modelName);
+
+
+        $modelNamePlural = Str::plural($modelName);
+        $actionNamespace = 'App\\Actions\\' . $modelNamePlural;
+
         $actionClass = "Delete{$modelNameStudly}Action";
 
         $modelNamePlural = Str::plural($modelNameStudly);
@@ -113,7 +127,7 @@ PHP;
         $actionContent = <<<PHP
     <?php
     
-    namespace App\Actions;
+    namespace {$actionNamespace};
     
     use App\Models\\{$modelNameStudly};
     
@@ -137,6 +151,11 @@ PHP;
         $modelNameStudly = Str::studly($modelName);
         $actionClass = "GetAll{$modelNameStudly}Action";
 
+
+        $modelNamePlural = Str::plural($modelName);
+        $actionNamespace = 'App\\Actions\\' . $modelNamePlural;
+
+
         $modelNamePlural = Str::plural($modelNameStudly);
         $actionPath = app_path("Actions/{$modelNamePlural}/{$actionClass}.php");
 
@@ -147,7 +166,7 @@ PHP;
         $actionContent = <<<PHP
 <?php
 
-namespace App\Actions;
+    namespace {$actionNamespace};
 
 use App\Models\\{$modelNameStudly};
 
@@ -169,6 +188,11 @@ PHP;
         $modelNameStudly = Str::studly($modelName);
         $actionClass = "Get{$modelNameStudly}Action";
 
+
+        $modelNamePlural = Str::plural($modelName);
+        $actionNamespace = 'App\\Actions\\' . $modelNamePlural;
+
+
         $modelNamePlural = Str::plural($modelNameStudly);
         $actionPath = app_path("Actions/{$modelNamePlural}/{$actionClass}.php");
 
@@ -180,7 +204,7 @@ PHP;
         $actionContent = <<<PHP
 <?php
 
-namespace App\Actions;
+    namespace {$actionNamespace};
 
 use App\Models\\{$modelNameStudly};
 
@@ -201,6 +225,8 @@ PHP;
     protected function generateControllerAction($modelName)
     {
         $modelNameStudly = Str::studly($modelName);
+        $modelNamePlural = Str::plural($modelName);
+
         $controllerClass = "{$modelNameStudly}Controller";
         $controllerPath = app_path("Http/Controllers/{$controllerClass}.php");
 
@@ -215,45 +241,63 @@ PHP;
     
     use App\Http\Requests\\Store{$modelNameStudly}Request;
     use App\Http\Requests\\Update{$modelNameStudly}Request;
-    use App\Actions\Create{$modelNameStudly}Action;
-    use App\Actions\Update{$modelNameStudly}Action;
-    use App\Actions\Delete{$modelNameStudly}Action;
-    use App\Actions\GetAll{$modelNameStudly}Action;
-    use App\Actions\Get{$modelNameStudly}Action;
+    use App\Actions\\{$modelNamePlural}\\Create{$modelNameStudly}Action;
+    use App\Actions\\{$modelNamePlural}\\Update{$modelNameStudly}Action;
+    use App\Actions\\{$modelNamePlural}\\Delete{$modelNameStudly}Action;
+    use App\Actions\\{$modelNamePlural}\\GetAll{$modelNameStudly}Action;
+    use App\Actions\\{$modelNamePlural}\\Get{$modelNameStudly}Action;
     use App\Models\\{$modelNameStudly};
-    
+    use App\Traits\HandlesErrors;
+
     class {$controllerClass} extends Controller
     {
+        use HandlesErrors;
+
         public function index(GetAll{$modelNameStudly}Action \$action)
         {
-            \$models = \$action->execute();
-            return response()->json(\$models);
+            return \$this->executeCrudOperation(function () use (\$action) {
+                \$models = \$action->execute();
+                return response()->json(\$models);
+            }, 'index'); 
         }
     
         public function store(Store{$modelNameStudly}Request \$request, Create{$modelNameStudly}Action \$action)
         {
-            \$model = \$action->execute(\$request->validated());
-            return response()->json(\$model, 201);
+            return \$this->executeCrudOperation(function () use (\$request, \$action) {
+                \$model = \$action->execute(\$request->validated());
+                return response()->json(\$model, 201);
+            }, 'store');
         }
     
         public function show(\$id, Get{$modelNameStudly}Action \$action)
         {
-            \$model = \$action->execute(\$id);
-            return \$model ? response()->json(\$model) : response()->json(['error' => 'Not Found'], 404);
+            return \$this->executeCrudOperation(function () use (\$id, \$action) {
+                \$model = \$action->execute(\$id);
+                if (!\$model) {
+                    return response()->json(['error' => 'Not Found'], 404);
+                }
+                
+                return response()->json(\$model);
+            }, 'show');
         }
     
         public function update(Update{$modelNameStudly}Request \$request, \$id, Update{$modelNameStudly}Action \$action)
         {
-            \$model = {$modelNameStudly}::findOrFail(\$id);
-            \$action->execute(\$model, \$request->validated());
-            return response()->json(\$model);
+            return \$this->executeCrudOperation(function () use (\$request, \$id, \$action) {
+                \$model = {$modelNameStudly}::findOrFail(\$id);
+                \$action->execute(\$model,\$request->validated());
+                return response()->json(\$model);
+            }, 'update');
+
         }
     
         public function destroy(\$id, Delete{$modelNameStudly}Action \$action)
         {
-            \$model = {$modelNameStudly}::findOrFail(\$id);
-            \$action->execute(\$model);
-            return response()->json(null, 204);
+            return \$this->executeCrudOperation(function () use (\$id, \$action) {
+                \$model = {$modelNameStudly}::findOrFail(\$id);
+                \$action->execute(\$model);
+                return response()->json(null, 204);
+            }, 'destroy');
         }
     }
     

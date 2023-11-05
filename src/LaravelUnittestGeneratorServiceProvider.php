@@ -14,18 +14,23 @@ class LaravelUnittestGeneratorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Loading routes if your package has routes
-       // $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+          // Check if the application is running in the console
+          if ($this->app->runningInConsole()) {
+            // Publish migrations
+            $this->publishes([
+                __DIR__ . '/database/migrations' => database_path('migrations'),
+            ], 'laravel-unittest-generator-migrations');
 
-        // Loading views if your package has views
-      // $this->loadViewsFrom(__DIR__.'/resources/views', 'laravelUnittestGenerator');
+            // Publish models
+            $this->publishes([
+                __DIR__ . '/Models' => app_path('Models'),
+            ], 'laravel-unittest-generator-models');
 
-        // Publishing configuration files if your package has config
-        // $this->publishes([
-        //     __DIR__.'/path/to/config/laravelUnittestGenerator.php' => config_path('laravelUnittestGenerator.php'),
-        // ], 'config');
-
-        // ... other bootstrapping logic
+            // Publish traits
+            $this->publishes([
+                __DIR__ . '/Traits' => app_path('Traits'),
+            ], 'laravel-unittest-generator-traits');
+        }
     }
 
     /**
@@ -35,17 +40,8 @@ class LaravelUnittestGeneratorServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Binding things into the service container
-        // $this->app->bind('example', function () {
-        //     return new Example();
-        // });
-
-        // Registering package commands, if you have any
-     
         $this->commands([
             UnitGenerator::class,
         ]);
-
-        // ... other registration logic
     }
 }
