@@ -10,6 +10,14 @@ To install via Composer:
 composer require fadllabanie/laravel_unittest_generator
 ```
 
+```bash
+php artisan vendor:publish
+```
+
+```bash
+php artisan migrate
+```
+
 ## Configuration:
 
 To properly use this package, your models should contain the following properties:
@@ -47,8 +55,8 @@ php artisan generate:unittest {model} {modelPath} {options}
 
 Replace {model} with the actual name of your Eloquent model, and {modelPath} with the full namespace path where your model resides. It's as easy as asking your application to kindly roll out tests for the specified model.
 
-
 ## Options
+
 Fine-tune your unit test generation with these enchanting flags:
 
 `-f` or --factory: Summon a factory alongside your test to ensure your database is seeded with data that mimics your production models.
@@ -57,9 +65,8 @@ Fine-tune your unit test generation with these enchanting flags:
 
 `-r` or --request: Implement this flag to create tests that safeguard your HTTP requests, ensuring they're fortified and secure.
 
-
-
 ## Example:
+
 ```bash
 php artisan generate:unittest Post App\\Models -f -r -c
 ```
@@ -99,8 +106,8 @@ To manifest a factory for your model, employ the following artisan command:
 php artisan generate:unittest {model} {modelPath} -f
 ```
 
-
 ## Generate Request Validation:
+
 Step up your testing game by automatically generating Request Validation tests for your Laravel application. Our tool understands the importance of bulletproof validations in your HTTP requests, ensuring that only valid data makes its way through your application's endpoints.
 
 ### What It Does:
@@ -147,6 +154,21 @@ When you invoke the controller generation command, it creates a suite of Action 
 - `Delete{Model}Action` for removing a model from the database.
 
 Each class is meticulously crafted to manage only its designated task, ensuring that your controllers remain lightweight and your business logic remains pristine.
+
+# The Magic Behind the Trait
+
+The Error Logging Trait acts as a sentinel within your Laravel application, meticulously monitoring CRUD operations for any exceptions or failures. When an error occurs, the trait intervenes to log the error details into a designated database table, which you can then review at your convenience. This proactive logging mechanism allows for immediate insights into the health and stability of your application.
+
+### Benefits
+
+Automated Error Tracking: Errors are logged automatically, freeing you from the burden of manual tracking and logging.
+Easy Error Retrieval: All error logs are stored in the database, allowing for easy retrieval, monitoring, and analysis.
+Improved Application Uptime: By catching and logging errors behind the scenes, the trait helps maintain a seamless user experience.
+Streamlined Debugging: With a structured error log at your fingertips, pinpointing and resolving issues becomes a much more efficient process.
+
+### Integrating the Trait
+
+The Error Logging Trait is designed to be as non-intrusive as possible. Integration is as simple as using the trait in any controller where you wish to have enhanced error logging for CRUD operations. There is no need to modify existing business logic, making the addition smooth and painless.
 
 ### How to Generate:
 
