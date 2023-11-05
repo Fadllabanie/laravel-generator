@@ -44,9 +44,6 @@ class GenerateControllerHelper
         {
             public function execute(array \$data): {$modelNameStudly}
             {
-                // Validate and create a new {$modelNameStudly}
-                // TODO: Add your validation and creation logic here
-
                 return {$modelNameStudly}::create(\$data);
             }
         }
