@@ -14,7 +14,7 @@ trait HandlesErrors
      * @param  string   $action
      * @return mixed
      */
-    public function executeCrudOperation(\Closure $operation, string $action)
+    public function executeOperation(\Closure $operation, string $action)
     {
         try {
             return $operation();

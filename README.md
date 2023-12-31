@@ -42,17 +42,35 @@ public function getFillableType()
         'description' => 'text',
     ];
 }
+
+public function getRelationData()
+    {
+        return [
+            'relationName1' => RelatedModel1::class,
+            'relationName2' => RelatedModel2::class,
+            // Add other relationships as needed
+        ];
+    }
+
 ```
 
-Supported data types include: `string`, `text`, `integer`, `float`, `date`, `datetime`, `boolean`, `password`, `email`, `token`, `belongsTo`
+Supported data types include: `string`, `text`, `integer`, `float`, `date`, `image`, `datetime`, `boolean`, `password`, `email`, `token`, `belongsTo`
 
 ## 📖 Usage
 
 With the package now part of your repository, conjure unit tests for your models with a simple artisan command:
 
 ```bash
-php artisan generate:unittest {Model} {ModelPath} {options}
+php artisan generator:run {Model} {ModelPath} {options}
 ```
+
+```bash
+php artisan generator:run Post App/Models -f -r -c
+```
+
+## 📖 NOTE:
+
+- if use `belongsTo` you should create relation model first and add getRelationData i model 
 
 ## 🎛️ Options
 
@@ -73,15 +91,16 @@ Fine-tune your unit test generation with these options:
 The command transmutes your model properties into a factory class, paving the way for effortlessly creating test data:
 
 ```bash
-php artisan generate:unittest {Model} {ModelPath} -f
+php artisan generator:run {Model} {ModelPath} -f
 ```
+
 
 ## 🔒 Generate Request Validation Tests
 
 Strengthen your application's defenses by automating Request Validation tests:
 
 ```bash
-php artisan generate:unittest {Model} {ModelPath} -r
+php artisan generator:run {Model} {ModelPath} -r
 ```
 
 ## 🛠️ Generate Controller with Action Pattern
@@ -89,7 +108,7 @@ php artisan generate:unittest {Model} {ModelPath} -r
 Embrace clean architecture by splitting controller logic into dedicated Action classes:
 
 ```bash
-php artisan generate:unittest {Model} {ModelPath} -c
+php artisan generator:run {Model} {ModelPath} -c
 ```
 
 ## 💡 The Magic Behind the Trait
@@ -107,7 +126,7 @@ Our Error Logging Trait is your silent guardian, logging every misstep in the sh
 To arm your controllers with our trait, simply integrate it with:
 
 ```bash
-php artisan generate:unittest {Model} {ModelPath} -f -r -c
+php artisan generator:run {Model} {ModelPath} -f -r -c
 ```
 
 ## 📜 Known Issues

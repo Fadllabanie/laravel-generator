@@ -32,7 +32,8 @@ class GenerateControllerHelper
         $actionPath = app_path("Actions/{$modelNamePlural}/{$actionClass}.php");
 
         if (File::exists($actionPath)) {
-            throw new \Exception("The action file {$actionClass}.php already exists.");
+            // throw new \Exception("The action file {$actionClass}.php already exists.");
+            Log::error("The action file {$actionClass}.php already exists.");
         }
 
         $actionContent = <<<PHP
@@ -160,6 +161,7 @@ PHP;
         $actionPath = app_path("Actions/{$modelNamePlural}/{$actionClass}.php");
 
         if (File::exists($actionPath)) {
+
             throw new \Exception("The action file {$actionClass}.php already exists.");
         }
 
@@ -239,8 +241,8 @@ PHP;
     
     namespace App\Http\Controllers;
     
-    use App\Http\Requests\\Store{$modelNameStudly}Request;
-    use App\Http\Requests\\Update{$modelNameStudly}Request;
+    use App\Http\Requests\\{$modelNamePlural}\\Store{$modelNameStudly}Request;
+    use App\Http\Requests\\{$modelNamePlural}\\Update{$modelNameStudly}Request;
     use App\Actions\\{$modelNamePlural}\\Create{$modelNameStudly}Action;
     use App\Actions\\{$modelNamePlural}\\Update{$modelNameStudly}Action;
     use App\Actions\\{$modelNamePlural}\\Delete{$modelNameStudly}Action;
@@ -255,49 +257,49 @@ PHP;
 
         public function index(GetAll{$modelNameStudly}Action \$action)
         {
-            return \$this->executeCrudOperation(function () use (\$action) {
+            return \$this->executeOperation(function () use (\$action) {
                 \$models = \$action->execute();
                 return response()->json(\$models);
-            }, 'index'); 
+            }, '{$controllerClass}-index'); 
         }
     
         public function store(Store{$modelNameStudly}Request \$request, Create{$modelNameStudly}Action \$action)
         {
-            return \$this->executeCrudOperation(function () use (\$request, \$action) {
+            return \$this->executeOperation(function () use (\$request, \$action) {
                 \$model = \$action->execute(\$request->validated());
                 return response()->json(\$model, 201);
-            }, 'store');
+            }, '{$controllerClass}-store');
         }
     
         public function show(\$id, Get{$modelNameStudly}Action \$action)
         {
-            return \$this->executeCrudOperation(function () use (\$id, \$action) {
+            return \$this->executeOperation(function () use (\$id, \$action) {
                 \$model = \$action->execute(\$id);
                 if (!\$model) {
                     return response()->json(['error' => 'Not Found'], 404);
                 }
                 
                 return response()->json(\$model);
-            }, 'show');
+            }, '{$controllerClass}-show');
         }
     
         public function update(Update{$modelNameStudly}Request \$request, \$id, Update{$modelNameStudly}Action \$action)
         {
-            return \$this->executeCrudOperation(function () use (\$request, \$id, \$action) {
+            return \$this->executeOperation(function () use (\$request, \$id, \$action) {
                 \$model = {$modelNameStudly}::findOrFail(\$id);
                 \$action->execute(\$model,\$request->validated());
                 return response()->json(\$model);
-            }, 'update');
+            }, '{$controllerClass}-update');
 
         }
     
         public function destroy(\$id, Delete{$modelNameStudly}Action \$action)
         {
-            return \$this->executeCrudOperation(function () use (\$id, \$action) {
+            return \$this->executeOperation(function () use (\$id, \$action) {
                 \$model = {$modelNameStudly}::findOrFail(\$id);
                 \$action->execute(\$model);
                 return response()->json(null, 204);
-            }, 'destroy');
+            }, '{$controllerClass}-destroy');
         }
     }
     

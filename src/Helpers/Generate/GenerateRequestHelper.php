@@ -3,18 +3,31 @@
 namespace fadllabanie\laravel_unittest_generator\Helpers\Generate;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class GenerateRequestHelper
 {
     public function generate(string $modelName, string $modelClass)
     {
+        $modelNamePlural =  Str::ucfirst(Str::plural($modelName));
+
+        $actionPath = app_path("app/Http/Requests/{$modelNamePlural}");
+
+        File::ensureDirectoryExists(app_path('Actions'));
+
+        $directory = dirname($actionPath);
+        if (!File::exists($directory)) {
+            File::makeDirectory($directory, 0755, true); // true for recursive create
+        }
+
         $model = $modelName;
 
-        Artisan::call('make:request', ['name' => "Store{$model}Request"]);
+        Artisan::call('make:request', ['name' => $modelNamePlural . "/" . "Store{$model}Request"]);
         Log::info("Store{$model}Request created successfully.");
 
-        Artisan::call('make:request', ['name' => "Update{$model}Request"]);
+        Artisan::call('make:request', ['name' => $modelNamePlural . "/" . "Update{$model}Request"]);
         Log::info("Update{$model}Request created successfully.");
 
         // Auto-fill request details if needed...
@@ -44,16 +57,18 @@ class GenerateRequestHelper
             $validationRules[$type] = 'required|' . $fillableTypes[$type];
         }
 
-        $this->writeRulesToRequestClass("Store{$modelName}Request", $validationRules);
-        $this->writeRulesToRequestClass("Update{$modelName}Request", $validationRules);
+        $this->writeRulesToRequestClass($modelName, "Store{$modelName}Request", $validationRules);
+        $this->writeRulesToRequestClass($modelName, "Update{$modelName}Request", $validationRules);
     }
 
 
-    private static function writeRulesToRequestClass($requestClassName, $rules)
+    private static function writeRulesToRequestClass($modelName, $requestClassName, $rules)
     {
+        $modelNamePlural =  Str::ucfirst(Str::plural($modelName));
+
         $rulesStringRepresentation = var_export($rules, true);
 
-        $path = app_path("Http/Requests/{$requestClassName}.php");
+        $path = app_path("Http/Requests/{$modelNamePlural}/{$requestClassName}.php");
 
         if (class_exists($path)) {
             Log::error("The model {$path} is exist.");
@@ -64,7 +79,9 @@ class GenerateRequestHelper
         $contents = file_get_contents($path);
 
         if (!preg_match($pattern, $contents)) {
-            dd("Pattern does not match in file: {$path}");
+            Log::error("Pattern does not match in file: {$path}");
+            // throw new \Exception("Pattern does not match in file: {$path}");
+            // continue;
         }
 
         $contents = preg_replace($pattern, "public function rules() {\n\treturn {$rulesStringRepresentation};\n}", $contents);

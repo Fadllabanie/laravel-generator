@@ -103,9 +103,20 @@ class GenerateUnitTestHelper
         if (!class_exists($modelClass)) {
             throw new \Exception("Model class {$modelClass} does not exist.");
         }
+        $factoryData = '';
+
         $updateData = $modelClass::factory()->make()->only($columns);
 
         // $updateData = $modelName::factory()->make()->only($columns)->toArray();
+
+        $modelInstance = new $modelClass;
+        $relations = method_exists($modelInstance, 'getRelationData') ? $modelInstance->getRelationData() : [];
+
+        foreach ($relations as $relation => $relationModel) {
+            $relatedModelInstance = $relationModel::factory()->create();
+            $factoryData .= "\$$relation = $relationModel::factory()->create(); // Create a new $relation\n        ";
+            $updateData[$relation . '_id'] = '$' . $relation . '->id';
+        }
 
         $updateDataString = var_export($updateData, true);
 
@@ -114,8 +125,9 @@ class GenerateUnitTestHelper
             public function it_can_update_a_{$snakeCaseModel}()
             {
                 \$originalData = {$modelName}::factory()->create()->toArray(); 
-                
-                \$updateData = {$updateDataString};
+                $factoryData
+
+                \$updateData = $updateDataString;
 
                 \$model = {$modelName}::find(\$originalData['id']); 
                 \$model->update(\$updateData); 

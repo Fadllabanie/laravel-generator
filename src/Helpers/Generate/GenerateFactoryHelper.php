@@ -62,12 +62,15 @@ class GenerateFactoryHelper
                 case 'password':
                     $factoryContent .= "        '$field' => \$this->faker->password,\n";
                     break;
+                case 'image':
+                    $factoryContent .= "        '$field' => \$this->faker->imageUrl(),\n";
+                    break;
                 case 'token':
                     $factoryContent .= "        '$field' => \Illuminate\Support\Str::random(60),\n";
                     break;
                 case 'belongsTo':
                     $relatedModelName = ucfirst(str_replace('_id', '', $field));
-                    $factoryContent .= "'{$field}' => \App\Models\\{$relatedModelName}::factory(),\n";
+                    $factoryContent .= "'{$field}' => \App\Models\\{$relatedModelName}::factory()->create()->id,\n";
                     break;
             }
         }
