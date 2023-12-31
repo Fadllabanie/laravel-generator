@@ -1,13 +1,13 @@
 # Laravel Unit Test Generator
 
-Supercharge your Laravel application's testing workflow with the `laravel_unittest_generator` package. This dynamic toolkit is your steadfast ally in creating robust unit tests with a touch of magic!
+Supercharge your Laravel application's testing workflow with the `laravel-generator` package. This dynamic toolkit is your steadfast ally in creating robust unit tests with a touch of magic!
 
 ## 🚀 Installation
 
-Time to bring the `laravel_unittest_generator` into your project. Cast these spells with Composer:
+Time to bring the `laravel-generator` into your project. Cast these spells with Composer:
 
 ```bash
-composer require fadllabanie/laravel_unittest_generator
+composer require fadllabanie/laravel-generator
 ```
 
 Invoke the artisan to publish your configs:
